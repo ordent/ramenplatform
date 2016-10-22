@@ -1,0 +1,19 @@
+{
+    "name": "ordents/ramenplatform",
+    "require": {
+        "dingo/api": "^0.10.0",
+        "zizaco/entrust": "^1.7"
+    },
+    "authors": [
+        {
+            "name": "Dimas Satrio",
+            "email": "dimassrio@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ordent\\Ramenplatform\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
