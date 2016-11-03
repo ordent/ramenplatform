@@ -1,8 +1,27 @@
 {
-    "name": "ordents/ramenplatform",
+    "name": "ordent/ramenplatform",
+    "description": "This package provides a streamlines and easy way to create api based service on laravel",
+    "keywords": ["laravel","illuminate","api","model","trait","response"],
+    "license": "MIT",
+    "authors": [
+       {
+           "name": "Dimas Satrio",
+           "email": "dimassrio@gmail.com"
+       },
+       {
+           "name": "Haryo Adi",
+           "email": "ryodbluedragon@gmail.com"
+       },
+       {
+           "name": "Shafhi Kasyfillah",
+           "email": "shafhi.kasyfillah@gmaill.com"
+       }
+    ],
     "require": {
-        "dingo/api": "^0.10.0",
-        "zizaco/entrust": "^1.7"
+        "dingo/api": "v1.0.0-beta6",
+        "intervention/image": "~2.3",
+        "alaouy/youtube": "~1.2",
+        "dawson/youtube": "~1.1"
     },
     "authors": [
         {

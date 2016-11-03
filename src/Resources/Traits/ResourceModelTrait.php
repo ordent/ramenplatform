@@ -1,46 +1,7 @@
 <?php namespace Ordent\Ramenplatform\Resources\Traits;
 
 
-trait ResourcesModelTrait{
-    /**
-     * attributes of a model
-     * @var array of attributes name on string
-     */
-    protected $attributes = []
-    /**
-     * casting of a attributes to native types, useful for native types, like integer, boolean, JsonSerializable
-     * @var ["attributes"=>"type"]
-     */
-    protected $casts = [];
-    /**
-     * casting of a date attributes
-     * @var ["attributes1", "attributes2"]
-     */
-    protected $dates = [];
-
-    /**
-     * original state of an attributes
-     * @var ["isActive" => 1]
-     */
-    protected $original = [];
-
-    /**
-     * set the transformer file of the model
-     * @var string
-     */
-    protected $transformers = "";
-
-    /**
-     * set the rules of an attributes
-     * @var [type]
-     */
-    protected $rules = [
-        "store" => [],
-        "update" => [],
-        "delete" => []
-    ];
-
-    protected $uploadPath;
+trait ResourceModelTrait{
 
     public function setTransformer($transformer){
         if($transformer instanceof Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
@@ -51,7 +12,10 @@ trait ResourcesModelTrait{
     }
 
     public function getTransformer(){
-        return $this->transformer;
+        if(!$this->transformers instanceof Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
+            $this->setTransformer($this->transformers);
+        }
+        return $this->transformers;
     }
 
     public function setRules($key, Array $attributes, $appends = false){
@@ -66,7 +30,7 @@ trait ResourcesModelTrait{
         if(array_key_exists($key, $this->rules)){
             return $this->rules[$key];
         }
-        return false;
+        return [];
     }
 
     public function setUploadPath($path){
@@ -85,11 +49,46 @@ trait ResourcesModelTrait{
     }
 
     public function getTransformedData(){
-        $results = $this->getMutatedAttributes();
+        $results = $this->toArray();
         // foreach($this->getAttributes() as $attributes){
         //     $results[$attributes] = $this->$attributes;
         // }
 
         return $results;
+    }
+
+    //set or add scope as index filters
+    public function setIndexFilters($scope, $appends = false){
+        if($appends){
+            $this->indexFilters = array_merge($this->indexFilters, (array) $scope);
+        }else{
+            $this->indexFilters = (array) $scope;
+        }
+    }
+
+    //get list of index filters
+    public function getIndexFilters(){
+
+        return $this->indexFilters;
+    }
+
+    //scope for limit & offset
+    public function scopePagination($query, $input){
+
+        if (isset($input['limit']) && isset($input['offset'])){
+            $query = $query->limit((int) $input['limit'])->offset((int) $input['offset']);
+        }
+
+        return $query;
+    }
+
+    //scope for sort data
+    public function scopeSort($query, $input){
+
+        if  (isset($input['sort'])){
+            $query = $query->orderBy('id', $input['sort']);
+        }
+
+        return $query;
     }
 }
