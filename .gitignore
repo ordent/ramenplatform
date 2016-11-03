@@ -1,2 +1,4 @@
 /vendor
 .DS_Store
+/src/.DS_Store
+/src/Contracts/.DS_Store
