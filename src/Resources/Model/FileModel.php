@@ -36,7 +36,7 @@ class FileModel extends ResourceModel {
      * set the transformer file of the model
      * @var string
      */
-    protected $transformers = "";
+    protected $transformers = "Ordent\Ramenplatform\Resources\Transformer\ResourceTransformer";
 
     /**
      * set the rules of an attributes
