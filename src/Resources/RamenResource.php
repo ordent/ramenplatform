@@ -39,7 +39,7 @@ class RamenResource{
         if($results){
             return $this->response->makeResponse(200, "", $results, $model->getTransformer());
         }
-        
+
         return $this->response->makeResponse(404);
     }
 
@@ -80,7 +80,8 @@ class RamenResource{
         $model = $this->resolveModel($model);
 
         $entity = $model->find($id);
-        if(!$entity) return false;
+
+        if(!$entity) return $this->response->makeResponse(404);
         //if $soft = 1 execute soft delete else force delete
         $results = ($entity->delete()) ? $entity : false;
         if($results){
