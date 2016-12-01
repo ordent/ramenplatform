@@ -20,9 +20,9 @@ class ResourceResponse extends DingoResponse{
             }
 
             if($transformer == null){
-                if($data instanceof Illuminate\Support\Collection){
+                if($data instanceof \Illuminate\Support\Collection){
                     $transformer = $data->first()->getTransformer();
-                }elseif($data instanceof Illuminate\Contracts\Pagination\Paginator){
+                }elseif($data instanceof \Illuminate\Contracts\Pagination\Paginator){
                     if(count($data->items)>0){
                         $transformer = $data->items()[0]->getTransformer();
                     }
@@ -31,11 +31,11 @@ class ResourceResponse extends DingoResponse{
                 }
             }
 
-            if($data instanceof Illuminate\Support\Collection){
+            if($data instanceof \Illuminate\Support\Collection){
                 return $this->collection($data, $transformer);
             }
 
-            if($data instanceof Illuminate\Contracts\Pagination\Paginator){
+            if($data instanceof \Illuminate\Contracts\Pagination\Paginator){
                 return $this->paginator($data, $transformer);
             }
 
