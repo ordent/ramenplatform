@@ -4,15 +4,17 @@
 trait ResourceModelTrait{
 
     public function setTransformer($transformer){
-        if($transformer instanceof Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
+        if($transformer instanceof \Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
             $this->transformers = $transformer;
         }else{
-            $this->transformers = app($transformer);
+          if(is_string($transformer)){
+            $this->transformers = app($transformer);            
+          }
         }
     }
 
     public function getTransformer(){
-        if(!$this->transformers instanceof Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
+        if(!$this->transformers instanceof \Ordent\Ramenplatform\Resources\Transformer\ResourcesTransformer){
             $this->setTransformer($this->transformers);
         }
         return $this->transformers;
