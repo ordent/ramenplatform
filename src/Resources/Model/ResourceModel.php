@@ -52,5 +52,9 @@ class ResourceModel extends Model implements ResourceModelInterface{
      */
     protected $indexFilters = ['pagination', 'sort'];
 
-    protected $uploadPath;
+    /*
+    * list of attribute that have files type.
+    */
+    protected $files = [];
+    protected $uploadPath = "uploads";
 }

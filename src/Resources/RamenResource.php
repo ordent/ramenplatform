@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Ordent\Ramenplatform\Resources\Response\ResourceResponse;
+use Illuminate\Http\UploadedFile;
 
 class RamenResource{
     protected $response;
@@ -66,7 +67,7 @@ class RamenResource{
 
         $entity = $model->find($id);
         if(!$entity) return $this->response->makeResponse(404);
-
+        
         $results = ($entity->update($data)) ? $entity : false;
 
         if($results){
@@ -104,5 +105,10 @@ class RamenResource{
             $param = $param->query();
         }
         return $param;
+    }
+
+    protected function saveFile(ResourceModelInterface $model, UploadedFile $file){
+      $path = $file->store($model->getUploadPath());
+      return $path;
     }
 }

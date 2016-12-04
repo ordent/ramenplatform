@@ -8,7 +8,7 @@ trait ResourceModelTrait{
             $this->transformers = $transformer;
         }else{
           if(is_string($transformer)){
-            $this->transformers = app($transformer);            
+            $this->transformers = app($transformer);
           }
         }
     }
@@ -93,4 +93,19 @@ trait ResourceModelTrait{
 
         return $query;
     }
+
+    public function getFileList(){
+      return $this->files;
+    }
+
+    public function fill($data){
+      $results = parent::fill($data);
+      foreach($model->getFileList() as $file){
+        if($results->$file instanceof UploadedFile){
+          $results->$file = $this->saveFile($results, $results->file);
+        }
+      }
+      return $results;
+    }
+
 }
