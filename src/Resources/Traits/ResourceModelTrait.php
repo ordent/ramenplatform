@@ -98,13 +98,15 @@ trait ResourceModelTrait{
       return $this->files;
     }
 
-    public function fill($data){
-      $results = parent::fill($data);
+    public function fill(array $attributes){
+      $results = parent::fill($attributes);
+
       foreach($model->getFileList() as $file){
         if($results->$file instanceof UploadedFile){
           $results->$file = $this->saveFile($results, $results->file);
         }
       }
+
       return $results;
     }
 
