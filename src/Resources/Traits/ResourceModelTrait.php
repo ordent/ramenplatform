@@ -101,13 +101,20 @@ trait ResourceModelTrait{
     public function fill(array $attributes){
       $results = parent::fill($attributes);
 
-      foreach($this->getFileList() as $file){
-        if($results->$file instanceof UploadedFile){
-          $results->$file = $this->saveFile($results, $results->file);
+      if(is_array($this->getFileList())){
+        foreach($this->getFileList() as $file){
+          if($results->$file instanceof UploadedFile){
+            $results->$file = $this->saveFile($results, $results->file);
+          }
         }
       }
 
       return $results;
+    }
+
+    protected function saveFile(ResourceModelInterface $model, UploadedFile $file){
+      $path = $file->store($model->getUploadPath());
+      return $path;
     }
 
 }
