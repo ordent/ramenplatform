@@ -101,7 +101,7 @@ trait ResourceModelTrait{
     public function fill(array $attributes){
       $results = parent::fill($attributes);
 
-      foreach($model->getFileList() as $file){
+      foreach($this->getFileList() as $file){
         if($results->$file instanceof UploadedFile){
           $results->$file = $this->saveFile($results, $results->file);
         }
