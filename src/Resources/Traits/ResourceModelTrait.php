@@ -98,23 +98,23 @@ trait ResourceModelTrait{
       return $this->files;
     }
 
-    public function fill(array $attributes){
-      $results = parent::fill($attributes);
+    // public function fill(array $attributes){
+    //   $results = parent::fill($attributes);
+    //
+    //   if(is_array($this->getFileList())){
+    //     foreach($this->getFileList() as $file){
+    //       if($results->$file instanceof UploadedFile){
+    //         $results->$file = $this->saveFile($results, $results->file);
+    //       }
+    //     }
+    //   }
+    //
+    //   return $results;
+    // }
 
-      if(is_array($this->getFileList())){
-        foreach($this->getFileList() as $file){
-          if($results->$file instanceof UploadedFile){
-            $results->$file = $this->saveFile($results, $results->file);
-          }
-        }
-      }
-
-      return $results;
-    }
-
-    protected function saveFile(ResourceModelInterface $model, UploadedFile $file){
-      $path = $file->store($model->getUploadPath());
-      return $path;
-    }
+    // protected function saveFile(ResourceModelInterface $model, UploadedFile $file){
+    //   $path = $file->store($model->getUploadPath());
+    //   return $path;
+    // }
 
 }

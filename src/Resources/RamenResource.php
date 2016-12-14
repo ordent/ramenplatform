@@ -48,7 +48,10 @@ class RamenResource{
 
         $model = $this->resolveModel($model);
         $results = $model->fill($data);
-
+        foreach($results->getFileList() as $file){
+          $path = $model->$file->store($model->getUploadPath());
+          $results->$file = $path;
+        }
         if($results && $results->save()){
             return $this->response->makeResponse(200, "", $results, $model->getTransformer());
         }
@@ -67,7 +70,10 @@ class RamenResource{
 
         $entity = $model->find($id);
         if(!$entity) return $this->response->makeResponse(404);
-
+        foreach($results->getFileList() as $file){
+          $path = $model->$file->store($model->getUploadPath());
+          $results->$file = $path;
+        }
         $results = ($entity->update($data)) ? $entity : false;
 
         if($results){
