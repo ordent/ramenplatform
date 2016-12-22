@@ -13,6 +13,7 @@ class ResourceModel extends Model implements ResourceModelInterface{
      * @var array of attributes name on string
      */
     protected $attributes = [];
+    protected $fillable = [];
     /**
      * casting of a attributes to native types, useful for native types, like integer, boolean, JsonSerializable
      * @var ["attributes"=>"type"]
@@ -34,7 +35,7 @@ class ResourceModel extends Model implements ResourceModelInterface{
      * set the transformer file of the model
      * @var string
      */
-    protected $transformers = "";
+    protected $transformers = "Ordent\Ramenplatform\Resources\Transformer\ResourceTransformer";
 
     /**
      * set the rules of an attributes
@@ -57,4 +58,13 @@ class ResourceModel extends Model implements ResourceModelInterface{
     */
     protected $files = [];
     protected $uploadPath = "uploads";
+
+    public function __construct(){
+      // if fillable attributes is empty, auto add fillable based on attributes array.
+      if(count($this->fillable) == 0){
+        foreach($this->attributes as $key => $attr){
+          array_push($this->fillable, $key);
+        }
+      }
+    }
 }
