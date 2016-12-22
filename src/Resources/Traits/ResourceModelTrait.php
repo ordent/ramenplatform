@@ -1,4 +1,7 @@
 <?php namespace Ordent\Ramenplatform\Resources\Traits;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 
 trait ResourceModelTrait{
@@ -98,23 +101,107 @@ trait ResourceModelTrait{
       return $this->files;
     }
 
-    // public function fill(array $attributes){
-    //   $results = parent::fill($attributes);
-    //
-    //   if(is_array($this->getFileList())){
-    //     foreach($this->getFileList() as $file){
-    //       if($results->$file instanceof UploadedFile){
-    //         $results->$file = $this->saveFile($results, $results->file);
-    //       }
-    //     }
-    //   }
-    //
-    //   return $results;
-    // }
+    public function fill(array $attributes){
+      $results = parent::fill($attributes);
 
-    // protected function saveFile(ResourceModelInterface $model, UploadedFile $file){
-    //   $path = $file->store($model->getUploadPath());
-    //   return $path;
-    // }
+      $list = $this->getFileList();
+      if(is_null($list)){
+        $list = [];
+      }
 
+      foreach($list as $file){
+        if($attributes[$file] instanceof UploadedFile){
+          $path = $this->processFile($attributes, $file);
+          $this->$file = url(Storage::url($path));
+        }
+      }
+      return $results;
+    }
+
+    public function processFile($array, $key){
+      $images = ["png", "jpg", "gif", "bmp"];
+      //check file extension
+      if(in_array($array[$key]->guessClientExtension(), $images)){
+        return $this->processImage($array, $key);
+      }else{
+        return $this->processOtherFile($array, $key);
+      }
+    }
+
+    public function processOtherFile($array, $key){
+      $name = $this->processFilename($array, $key);
+      $path = $array[$key]->storeAs("/public".$this->getUploadPath(), $name);
+      // assign to the object
+      return $path;
+    }
+
+    public function processImage($array, $key){
+      $img  = Image::make($array[$key]);
+      $name = $this->processFilename($array, $key);
+      $height = $img->height();
+      $width  = $img->height();
+      if(array_key_exists($key."_height", $array)){
+        $height = intval($array[$key."_height"]);
+      }elseif(!array_key_exists($key."_width", $array)){
+        $width = ($height / $img->height()) * $img->width();
+      }
+
+      if(array_key_exists($key."_width", $array)){
+        $width = intval($array[$key."_width"]);
+      }elseif(!array_key_exists($key."_height", $array)){
+        $height = ($width / $img->width()) * $img->height();
+      }
+      if(array_key_exists($key."_operation", $array)){
+        switch ($array[$key."_operation"]) {
+          case 'resize':
+            $img->resize($width, $height);
+            break;
+          case 'crop':
+            $img->crop($width, $height);
+            break;
+          case 'fit':
+            $img->fit($width, $height);
+            break;
+          default:
+            echo('default');
+            break;
+        }
+      }
+      //type
+      // $img->resize($width, $height);
+      $type = $array[$key]->guessClientExtension();
+      if(array_key_exists($key."_type", $array)){
+        $type = $array[$key."_type"];
+      }
+      //quality
+      $quality = 100;
+      if(array_key_exists($key."_quality", $array)){
+        $quality = $array[$key."_quality"];
+      }
+      // save image
+      $img  = Storage::put("public/uploads/".$name, $img->stream());
+      return "public/uploads/".$name;
+    }
+
+    public function processFilename($array, $key){
+      // check if name already set up
+      if(array_key_exists($key."_name", $array)){
+        $name = $array[$key."_name"];
+        $ext = strstr($name, ".");
+
+        //if no extension detected in name
+        if(!$ext){
+          $ext = ".".$array[$key]->guessClientExtension();
+          $name = $array[$key."_name"].$ext;
+        }
+        // if extension different with extension guesser
+        if($ext != $array[$key]->guessClientExtension()){
+          $ext = ".".$array[$key]->guessClientExtension();
+          $name = strstr($array[$key."_name"], ".", true).$ext;
+        }
+        return $name;
+      }else{
+        return md5($array[$key]).".".$array[$key]->guessClientExtension();;
+      }
+    }
 }

@@ -57,7 +57,7 @@ class ResourceModel extends Model implements ResourceModelInterface{
     * list of attribute that have files type.
     */
     protected $files = [];
-    protected $uploadPath = "uploads";
+    protected $uploadPath = "/uploads";
 
     public function __construct(){
       // if fillable attributes is empty, auto add fillable based on attributes array.
@@ -67,4 +67,6 @@ class ResourceModel extends Model implements ResourceModelInterface{
         }
       }
     }
+
+
 }
