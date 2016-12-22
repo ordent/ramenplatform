@@ -15,7 +15,7 @@ class RamenplatformServiceProvider extends ServiceProvider
         $this->publishes([
         __DIR__.'ramen.php' => config_path('ramen.php'),
         ]);
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        //$this->loadRoutesFrom(__DIR__.'/routes.php');
     }
     /**
      * Register the application services.
