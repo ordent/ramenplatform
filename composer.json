@@ -20,8 +20,6 @@
     "require": {
         "dingo/api": "v1.0.0-beta6",
         "intervention/image": "~2.3",
-        "alaouy/youtube": "~1.2",
-        "dawson/youtube": "~1.1"
     },
     "authors": [
         {

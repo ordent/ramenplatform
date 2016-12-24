@@ -13,7 +13,7 @@ class RamenplatformServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-        __DIR__.'ramen.php' => config_path('ramen.php'),
+        __DIR__.'/ramen.php' => config_path('ramen.php'),
         ]);
         //$this->loadRoutesFrom(__DIR__.'/routes.php');
     }

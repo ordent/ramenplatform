@@ -103,16 +103,17 @@ trait ResourceModelTrait{
 
     public function fill(array $attributes){
       $results = parent::fill($attributes);
-
       $list = $this->getFileList();
       if(is_null($list)){
         $list = [];
       }
 
       foreach($list as $file){
-        if($attributes[$file] instanceof UploadedFile){
-          $path = $this->processFile($attributes, $file);
-          $this->$file = url(Storage::url($path));
+        if(array_key_exists($file, $list)){
+          if($attributes[$file] instanceof UploadedFile){
+            $path = $this->processFile($attributes, $file);
+            $this->$file = url(Storage::url($path));
+          }
         }
       }
       return $results;
