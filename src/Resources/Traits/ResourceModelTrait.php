@@ -109,7 +109,7 @@ trait ResourceModelTrait{
       }
 
       foreach($list as $file){
-        if(array_key_exists($file, $list)){
+        if(array_key_exists($file, $attributes)){
           if($attributes[$file] instanceof UploadedFile){
             $path = $this->processFile($attributes, $file);
             $this->$file = url(Storage::url($path));
@@ -120,11 +120,12 @@ trait ResourceModelTrait{
     }
 
     public function processFile($array, $key){
-      $images = ["png", "jpg", "gif", "bmp"];
+      $images = ["png", "jpg", "gif", "bmp", "jpeg"];
       //check file extension
       if(in_array($array[$key]->guessClientExtension(), $images)){
         return $this->processImage($array, $key);
       }else{
+
         return $this->processOtherFile($array, $key);
       }
     }
