@@ -139,9 +139,9 @@ trait ResourceModelTrait{
 
     public function processImage($array, $key){
       $img  = Image::make($array[$key]);
-      $name = $this->processFilename($array, $key);
       $height = $img->height();
       $width  = $img->height();
+
       if(array_key_exists($key."_height", $array)){
         $height = intval($array[$key."_height"]);
       }elseif(!array_key_exists($key."_width", $array)){
@@ -153,6 +153,7 @@ trait ResourceModelTrait{
       }elseif(!array_key_exists($key."_height", $array)){
         $height = ($width / $img->width()) * $img->height();
       }
+
       if(array_key_exists($key."_operation", $array)){
         switch ($array[$key."_operation"]) {
           case 'resize':
@@ -180,12 +181,13 @@ trait ResourceModelTrait{
       if(array_key_exists($key."_quality", $array)){
         $quality = $array[$key."_quality"];
       }
+	  $name = $this->processFilename($array, $key, $type);
       // save image
-      $img  = Storage::put("public/uploads/".$name, $img->stream());
+      $img  = Storage::put("public/uploads/".$name, $img->stream($type, $quality));
       return "public/uploads/".$name;
     }
 
-    public function processFilename($array, $key){
+    public function processFilename($array, $key, $type = null){
       // check if name already set up
       if(array_key_exists($key."_name", $array)){
         $name = $array[$key."_name"];
@@ -197,13 +199,13 @@ trait ResourceModelTrait{
           $name = $array[$key."_name"].$ext;
         }
         // if extension different with extension guesser
-        if($ext != $array[$key]->guessClientExtension()){
-          $ext = ".".$array[$key]->guessClientExtension();
+        if($ext != $type){
+          $ext = ".".$type;
           $name = strstr($array[$key."_name"], ".", true).$ext;
         }
         return $name;
       }else{
-        return md5($array[$key]).".".$array[$key]->guessClientExtension();;
+        return md5($array[$key]).".".$type;
       }
     }
 }
