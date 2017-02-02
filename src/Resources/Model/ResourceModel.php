@@ -51,7 +51,7 @@ class ResourceModel extends Model implements ResourceModelInterface{
      * list of scope to be used as filter for index operation
      * @var array
      */
-    protected $indexFilters = ['pagination', 'sort'];
+    protected $indexFilters = ['pagination', 'sort', 'datatables'];
 
     /*
     * list of attribute that have files type.

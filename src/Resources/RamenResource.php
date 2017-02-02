@@ -6,104 +6,132 @@ use Ordent\Ramenplatform\Resources\Response\ResourceResponse;
 use Illuminate\Http\UploadedFile;
 
 class RamenResource{
-    protected $response;
+	protected $response;
 
-    public function __construct(ResourceResponse $response){
-        $this->response = $response;
-    }
+	public function __construct(ResourceResponse $response){
+		$this->response = $response;
+	}
 
-    public function index($model, $param){
-        // setup
-        $param = $this->resolveParam($param);
+	public function index($model, $param){
+		// setup
+		$param = $this->resolveParam($param);
 
-        $model = $this->resolveModel($model);
+		$model = $this->resolveModel($model);
 
-        //query builder
-        $query = $model;
-        // get array of filter from model
-        foreach ($model->getIndexFilters() as $filter) {
-            //get query from model (always return query)
-            $query = $query->$filter($param);
-        }
+		//query builder
+		$query = $model;
+		// dd($model->getCountForPagination(["*"])->get());
+		// get array of filter from model
 
-        // call query
-        $results = $query->get();
-        // transform
+		foreach ($model->getIndexFilters() as $filter) {
+			//get query from model (always return query)
+			if(!$query instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator){
+				$query = $query->$filter($param);				
+			}
+			// if($filter == "datatables"){
+			//     dd($query);
+			// }
+		}
+		$total = $query->count();
+		$meta = [];
 
-        return $this->response->makeResponse(200, "", $results, $model->getTransformer());
-    }
 
-    public function detail($model, $id){
+		if((!$query instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator)){
+			$results = $query->get();				
+		}else{
+			$results = $query;
+		}
+		// call query
+		//$results = $query->get();
+		// transform
+		if(array_key_exists("datatables", $param)){
+			$meta["datatables"] = true;
+			$meta["draw"] = 1;
+			if(array_key_exists("sEcho", $param)){
+				$meta["sEcho"] = $param["sEcho"];
+			}
+			if(array_key_exists("draw", $param)){
+				$meta["draw"] = (int) $param["draw"];
+			}
+			$meta['iTotalRecords'] = $total;
+			$meta['recordsTotal'] = $total;
+			$meta["iTotalDisplayRecords"] = $total;
+			$meta["recordsFiltered"] = $total;
+		}
+		return $this->response->makeResponse(200, "", $results, $model->getTransformer(), $meta);
+	}
 
-        $model = $this->resolveModel($model);
-        $results = $model->find($id);
-        if($results){
-            return $this->response->makeResponse(200, "", $results, $model->getTransformer());
-        }
+	public function detail($model, $id){
 
-        return $this->response->makeResponse(404);
-    }
+		$model = $this->resolveModel($model);
+		$results = $model->find($id);
+		if($results){
+			return $this->response->makeResponse(200, "", $results, $model->getTransformer());
+		}
 
-    public function store($model, $data){
+		return $this->response->makeResponse(404);
+	}
 
-        $model = $this->resolveModel($model);
-        $results = $model->fill($data);
+	public function store($model, $data){
 
-        if($results && $results->save()){
-            return $this->response->makeResponse(200, "", $results, $model->getTransformer());
-        }
+		$model = $this->resolveModel($model);
+		$results = $model->fill($data);
 
-        return $this->response->makeResponse(404);
+		if($results && $results->save()){
+			return $this->response->makeResponse(200, "", $results, $model->getTransformer());
+		}
 
-    }
+		return $this->response->makeResponse(404);
 
-    public function update($model, $data, $id = null){
+	}
 
-        if(is_null($id)){
-            return $this->store($model, $data);
-        }
+	public function update($model, $data, $id = null){
 
-        $model = $this->resolveModel($model);
+		if(is_null($id)){
+			return $this->store($model, $data);
+		}
 
-        $entity = $model->find($id);
-        if(!$entity) return $this->response->makeResponse(404);
+		$model = $this->resolveModel($model);
 
-        $results = ($entity->update($data)) ? $entity : false;
+		$entity = $model->find($id);
+		if(!$entity) return $this->response->makeResponse(404);
 
-        if($results){
-            return $this->response->makeResponse(200, "", $results, $model->getTransformer());
-        }
+		$results = ($entity->update($data)) ? $entity : false;
 
-        return $this->response->makeResponse(404);
-    }
+		if($results){
+			return $this->response->makeResponse(200, "", $results, $model->getTransformer());
+		}
 
-    public function delete($model, $id, $soft = 0){
-        $model = $this->resolveModel($model);
+		return $this->response->makeResponse(404);
+	}
 
-        $entity = $model->find($id);
+	public function delete($model, $id, $soft = 0){
+		$model = $this->resolveModel($model);
 
-        if(!$entity) return $this->response->makeResponse(404);
-        //if $soft = 1 execute soft delete else force delete
-        $results = ($entity->delete()) ? $entity : false;
-        if($results){
-            return $this->response->makeResponse(200, "", $results, $model->getTransformer());
-        }
+		$entity = $model->find($id);
 
-        return $this->response->makeResponse(404);
-    }
+		if(!$entity) return $this->response->makeResponse(404);
+		//if $soft = 1 execute soft delete else force delete
+		$results = ($entity->delete()) ? $entity : false;
+		if($results){
+			return $this->response->makeResponse(200, "", $results, $model->getTransformer());
+		}
 
-    protected function resolveModel($model){
-        if(! $model instanceof Model){
-            $model = app($model);
-        }
+		return $this->response->makeResponse(404);
+	}
 
-        return $model;
-    }
+	protected function resolveModel($model){
+		if(! $model instanceof Model){
+			$model = app($model);
+		}
 
-    protected function resolveParam($param){
-        if($param instanceof Request){
-            $param = $param->query();
-        }
-        return $param;
-    }
+		return $model;
+	}
+
+	protected function resolveParam($param){
+		if($param instanceof Request){
+			$param = $param->query();
+		}
+		return $param;
+	}
 }
