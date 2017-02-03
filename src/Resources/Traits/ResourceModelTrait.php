@@ -104,7 +104,7 @@ trait ResourceModelTrait{
 						dd(is_numeric($input["search"]["value"]));
 						$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
 					}else{
-						if(\DB::connection()->getDoctrineColumn($this->getTable(), $key)->getType()->getName()){
+						if(\DB::connection()->getDoctrineColumn($this->getTable(), $key)->getType()->getName() == "string"){
 							$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
 						}
 					}
