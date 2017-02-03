@@ -14,7 +14,7 @@ class ResourceResponse extends DingoResponse{
 		return $this->errorResponse($httpCode, $message);
 	}
 
-	protected function successResponse($httpCode, $message, $data, $transformer, $meta){
+	protected function successResponse($httpCode, $message, $data, $transformer, $meta = []){
 		if($httpCode == 200){
 			if(is_array($data)){
 				return $this->array($data)->setMeta($meta);
