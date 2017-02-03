@@ -100,9 +100,14 @@ trait ResourceModelTrait{
 			if(isset($input['search']['value']) && $input["search"]["value"] != null){
 				$attributes = [];
 				foreach($this["attributes"] as $key => $attribute){
-					$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
+					if(is_numeric($input["search"]["value"])){
+						$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
+					}else{
+						if($attribute == "string"){
+							$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
+						}
+					}
 				}
-				
 				// dd($input["search"]["value"]);
 			}
 		}
