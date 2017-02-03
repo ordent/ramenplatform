@@ -19,7 +19,8 @@
     ],
     "require": {
         "dingo/api": "v1.0.0-beta6",
-        "intervention/image": "~2.3"
+        "intervention/image": "~2.3",
+        "doctrine/dbal": "^2.5"
     },
     "authors": [
         {
