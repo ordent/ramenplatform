@@ -20,13 +20,14 @@ class ResourceResponse extends DingoResponse{
 				return $this->array($data)->setMeta($meta);
 			}
 
-			if(array_key_exists("datatables", $meta)){
-				$manager = new Manager();
-				$manager->setSerializer(new DatatableSerializer());
-				app('Dingo\Api\Transformer\Factory')->setAdapter(function ($app) use ($manager){
-				     return new \Dingo\Api\Transformer\Adapter\Fractal($manager, 'include', ',');
-				});
-
+			if(is_array($meta)){
+				if(array_key_exists("datatables", $meta)){
+					$manager = new Manager();
+					$manager->setSerializer(new DatatableSerializer());
+					app('Dingo\Api\Transformer\Factory')->setAdapter(function ($app) use ($manager){
+					     return new \Dingo\Api\Transformer\Adapter\Fractal($manager, 'include', ',');
+					});
+				}
 			}
 
 			if($transformer == null){
