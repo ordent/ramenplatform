@@ -5,7 +5,7 @@ use Ordent\Ramenplatform\Resources\Serializer\DatatableSerializer;
 
 class ResourceResponse extends DingoResponse{
 	// factory function
-	public function makeResponse($httpCode = 200, $message = null, $data = null, $transformer = null, $meta = null){
+	public function makeResponse($httpCode = 200, $message = null, $data = null, $transformer = null, $meta = []){
 
 		if(substr($httpCode, 0, 1) == 2){
 			return $this->successResponse($httpCode, $message, $data, $transformer, $meta);
