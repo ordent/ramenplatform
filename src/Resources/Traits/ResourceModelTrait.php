@@ -131,11 +131,14 @@ trait ResourceModelTrait{
 	}
 
 	public function scopeWhere($query, $input){
-		foreach($this->attributes as $key => $value){
-			if(isset($input[$key])){
-				$query->where($key, $input[$key]);
+		if(!isset($input['datatables'])){
+			foreach($this->attributes as $key => $value){
+				if(isset($input[$key])){
+					$query->where($key, $input[$key]);
+				}
 			}
 		}
+		return $query;
 	}
 
 

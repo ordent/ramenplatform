@@ -25,8 +25,16 @@ class RamenResource{
 
 		foreach ($model->getIndexFilters() as $filter) {
 			//get query from model (always return query)
+			
 			if(!$query instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator){
-				$query = $query->$filter($param);				
+				if($filter == "where"){
+					if(!array_key_exists("datatables", $param)){
+						$query = $query->$filter($param);
+					}
+				}else{
+					$query = $query->$filter($param);
+				}
+
 			}
 			// if($filter == "datatables"){
 			//     dd($query);
