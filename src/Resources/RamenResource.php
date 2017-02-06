@@ -40,7 +40,7 @@ class RamenResource{
 			//     dd($query);
 			// }
 		}
-		$total = $query->count();
+		$total = $model->count();
 		$meta = [];
 
 
