@@ -101,7 +101,6 @@ trait ResourceModelTrait{
 				$attributes = [];
 				foreach($this["attributes"] as $key => $attribute){
 					if(is_numeric($input["search"]["value"])){
-						dd(is_numeric($input["search"]["value"]));
 						$query = $query->orWhere($key, "like", "%".$input["search"]["value"]."%");
 					}else{
 						if(\DB::connection()->getDoctrineColumn($this->getTable(), $key)->getType()->getName() == "string"){
@@ -129,6 +128,14 @@ trait ResourceModelTrait{
 			}
 		}
 		return $query;
+	}
+
+	public function scopeWhere($query, $input){
+		foreach($this->attributes as $key => $value){
+			if(isset($input[$key])){
+				$query->where($key, $input[$key]);
+			}
+		}
 	}
 
 
