@@ -40,7 +40,18 @@ class RamenResource{
 			//     dd($query);
 			// }
 		}
-		$total = $model->count();
+		$total = $query->count();
+
+		if(array_key_exists("datatables", $param)){
+			if(array_key_exists("start", $param)){
+				$query = $query->offset($param['start']);
+			}
+
+			if(array_key_exists("length", $param)){
+				$query = $query->limit($param['length']);
+			}
+		}
+
 		$meta = [];
 
 

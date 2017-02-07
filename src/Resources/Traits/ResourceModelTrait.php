@@ -115,17 +115,17 @@ trait ResourceModelTrait{
 			if(isset($input['iDisplayStart'])){
 				$query = $query->offset($input['iDisplayStart'] - 1);
 			}
-			if(isset($input['start'])){
-				$query = $query->offset($input['start']);
-			}
+			// if(isset($input['start'])){
+			// 	$query = $query->offset($input['start']);
+			// }
 
 			if(isset($input['iDisplayLength'])){
 				$query = $query->limit($input['iDisplayLength']);
 			}
 
-			if(isset($input['length'])){
-				$query = $query->limit($input['length']);
-			}
+			// if(isset($input['length'])){
+			// 	$query = $query->limit($input['length']);
+			// }
 		}
 		return $query;
 	}
