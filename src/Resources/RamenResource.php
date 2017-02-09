@@ -83,7 +83,12 @@ class RamenResource{
 	public function detail($model, $id){
 
 		$model = $this->resolveModel($model);
-		$results = $model->find($id);
+		if(is_numeric($id)){
+			$results = $model->find($id);
+		}else{
+			$results = $model->where("slug", $id);
+		}
+
 		if($results){
 			return $this->response->makeResponse(200, "", $results, $model->getTransformer());
 		}
