@@ -86,7 +86,7 @@ class RamenResource{
 		if(is_numeric($id)){
 			$results = $model->find($id);
 		}else{
-			$results = $model->where("slug", $id);
+			$results = $model->where("slug", $id)->get()->first();
 		}
 
 		if($results){
