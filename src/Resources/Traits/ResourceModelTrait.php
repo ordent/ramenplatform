@@ -168,6 +168,14 @@ trait ResourceModelTrait{
 				if($attributes[$file] instanceof UploadedFile){
 					$path = $this->processFile($attributes, $file);
 					$this->$file = url(Storage::url($path));
+				}elseif(is_array($attributes[$file])){
+					$arr = [];
+					foreach($attributes[$file] as $k =>$f){
+						$path = $this->processFile($attributes[$file], $k);
+						$paths = url(Storage::url($path));
+						array_push($arr, $paths);
+					}
+					$this->$file = $arr;
 				}
 			}
 		}
