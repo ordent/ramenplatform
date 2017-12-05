@@ -40,7 +40,6 @@ class RamenResource{
 			//     dd($query);
 			// }
 		}
-		$total = $query->count();
 
 		if(array_key_exists("datatables", $param)){
 			if(array_key_exists("start", $param)){
@@ -60,6 +59,7 @@ class RamenResource{
 		}else{
 			$results = $query;
 		}
+		$total = $results->count();
 		// call query
 		//$results = $query->get();
 		// transform
