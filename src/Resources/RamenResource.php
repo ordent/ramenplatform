@@ -40,6 +40,7 @@ class RamenResource{
 			//     dd($query);
 			// }
 		}
+		$itotal = $query->get()->count();
 
 		if(array_key_exists("datatables", $param)){
 			if(array_key_exists("start", $param)){
@@ -59,7 +60,7 @@ class RamenResource{
 		}else{
 			$results = $query;
 		}
-		$total = $results->count();
+		$filteredTotal = $results->count();
 		// call query
 		//$results = $query->get();
 		// transform
@@ -72,10 +73,10 @@ class RamenResource{
 			if(array_key_exists("draw", $param)){
 				$meta["draw"] = (int) $param["draw"];
 			}
-			$meta['iTotalRecords'] = $total;
-			$meta['recordsTotal'] = $total;
-			$meta["iTotalDisplayRecords"] = $total;
-			$meta["recordsFiltered"] = $total;
+			$meta['iTotalRecords'] = $itotal;
+			$meta['recordsTotal'] = $itotal;
+			$meta["iTotalDisplayRecords"] = $filteredTotal;
+			$meta["recordsFiltered"] = $filteredTotal;
 		}
 		return $this->response->makeResponse(200, "", $results, $model->getTransformer(), $meta);
 	}
